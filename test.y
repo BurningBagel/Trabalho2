@@ -8,11 +8,17 @@ int yyerror(char *s);
 int yylex(void);
 
 
+#define VALOR 1
+#define LETRAS 2
+#define BOOLEANO 3
+
+//strdup() <-------------------------------
 struct simbolo{
 	simbolo* anterior;
 	simbolo* seguinte;
-	char nome[50];
-	char valor[50];
+	char *nome;
+	char *valor;
+	int tipo;
 	};
 	
 simbolo* tabelaSimbolos;
@@ -41,7 +47,12 @@ simbolo* ProcurarTabela(char *nome){
 	return NULL;
 }
 	
-	
+struct no{
+	no filhos[];
+	int tipo;
+	simbolo* refereTabela;
+	char *valor;
+};
 
 
 %}
@@ -130,12 +141,6 @@ simbolo* ProcurarTabela(char *nome){
 %type <val> mathop2
 %type <val> matharg
 
-
-
-
-
-
-
 %%
 statement: 
 		assignment SEMICOLON statement
@@ -155,7 +160,7 @@ statement:
 comparg:
 		ID					{/*olhar na tabela*/}
 	|	OPENPAR comparison CLOSEPAR		{$$ = $2;}
-	|	NUM					{$$ = ($2 != 0);}
+	|	NUM					{$$ = (atof($1) != 0);}
 	;
 
 comparison:
@@ -352,7 +357,7 @@ mathop1:
 
 mathop2:
 		matharg					
-	|	OPENPAR mathop CLOSEPAR	{$$ = $2;free($1);free($3);}
+	|	OPENPAR mathop CLOSEPAR	{$$ = $2;}
 	;
 
 matharg:

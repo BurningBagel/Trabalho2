@@ -78,9 +78,9 @@ remove		{printf("Achei um remove na linha %d, coluna %d!\n",linhaCount,colunaCou
 exists		{printf("Achei um exists na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng; return EXISTS;}
 forall		{printf("Achei um forall na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng; return FORALL;}
 return		{printf("Achei um return na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng; return RETURN;}
-{id}		{printf("Achei o id %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng; return ID;}
-{number}	{printf("Achei o numero %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng; return NUM;}
-{string}	{printf("Achei a string %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng; return STRING;}
+{id}		{printf("Achei o id %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng; yylval.text = strdup(yytext); return ID;}
+{number}	{printf("Achei o numero %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng; yylval.text = strdup(yytext); return NUM;}
+{string}	{printf("Achei a string %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng;  return STRING;}
 {char}		{printf("Achei o char %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng; return CHAR;}
 "("		{printf("Achei um ( na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return OPENPAR;}
 ")"		{printf("Achei um ) na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return CLOSEPAR;}
