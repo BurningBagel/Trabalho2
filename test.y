@@ -49,6 +49,7 @@ simbolo* ProcurarTabela(char *nome){
 %union {
 	double val;	
 	char *text;
+	bool boolean;
 }
 
 %token <val> NUM
@@ -112,7 +113,7 @@ simbolo* ProcurarTabela(char *nome){
 %type <text> read
 %type <text> comparg
 %type <text> comparison
-%type <text> in
+//%type <text> in
 %type <text> conjuntoop1
 %type <text> pertinencia
 %type <text> tipagem
@@ -121,11 +122,13 @@ simbolo* ProcurarTabela(char *nome){
 %type <text> selecao
 %type <text> iteracao
 %type <text> function_call
+%type <text> funcargs
 %type <text> args
+%type <text> args1
 %type <text> variable_declaration
-%type <text> mathop1
-%type <text> mathop2
-%type <text> matharg
+%type <val> mathop1
+%type <val> mathop2
+%type <val> matharg
 
 
 
@@ -137,6 +140,7 @@ simbolo* ProcurarTabela(char *nome){
 statement: 
 		assignment SEMICOLON statement
 	|	function_declaration statement
+	|	variable_declaration statement
 	|	conjuntoop SEMICOLON statement
 	|	mathop SEMICOLON statement
 	|	return SEMICOLON statement
@@ -149,51 +153,50 @@ statement:
 	;
 
 comparg:
-		ID
-	|	OPENPAR comparison CLOSEPAR
-	|	NUM
+		ID					{/*olhar na tabela*/}
+	|	OPENPAR comparison CLOSEPAR		{$$ = $2;}
+	|	NUM					{$$ = ($2 != 0);}
 	;
 
 comparison:
-		NOT comparg
-	|	comparg AND comparg
-	|	comparg OR comparg
-	|	comparg GREATER comparg
-	|	comparg GE comparg
-	|	comparg LESS comparg
-	|	comparg LE comparg
-	|	comparg EQ comparg
-	|	comparg NEQ comparg
+		NOT comparg				{$$ = !$2;}
+	|	comparg AND comparg			{$$ = $1 && $3;}
+	|	comparg OR comparg			{$$ = $1 || $3;}
+	|	comparg GREATER comparg		{$$ = $1 > $3;}
+	|	comparg GE comparg			{$$ = $1 >= $3;}
+	|	comparg LESS comparg			{$$ = $1 < $3;}
+	|	comparg LE comparg			{$$ = $1 <= $3;}
+	|	comparg EQ comparg			{$$ = $1 == $3;}
+	|	comparg NEQ comparg			{$$ = $1 != $3;}
 	;
 
 read:
-		READ OPENPAR ID CLOSEPAR
+		READ OPENPAR ID CLOSEPAR		{/*ler entrada, guardar?*/}
 	;
 
 write:
-		WRITE OPENPAR ID CLOSEPAR
-	|	WRITE OPENPAR mathop CLOSEPAR
-	|	WRITE OPENPAR NUM CLOSEPAR
-	|	WRITE OPENPAR  STRING  CLOSEPAR
+//		WRITE OPENPAR ID CLOSEPAR
+		WRITE OPENPAR mathop CLOSEPAR		{printf("%d",$3);}
+//	|	WRITE OPENPAR NUM CLOSEPAR	
+	|	WRITE OPENPAR  STRING  CLOSEPAR	{printf("%s",$3);}
 	;
 
 
 writeln:
-		WRITELN OPENPAR ID CLOSEPAR
-	|	WRITELN OPENPAR mathop CLOSEPAR
-	|	WRITELN OPENPAR NUM CLOSEPAR
-	|	WRITELN OPENPAR  STRING  CLOSEPAR
+//		WRITELN OPENPAR ID CLOSEPAR
+		WRITELN OPENPAR mathop CLOSEPAR	printf("%d\n",$3);}
+//	|	WRITELN OPENPAR NUM CLOSEPAR
+	|	WRITELN OPENPAR  STRING  CLOSEPAR	printf("%s\n",$3);}
 	;
-in:
+/*in:
 		ID IN ID
 	|	ID IN conjuntoop
 	;
-
+*/
 return:
-		RETURN ID
-	|	RETURN NUM
-	|	RETURN function_call
-	|	RETURN comparison
+//		RETURN ID
+//	|	RETURN function_call
+		RETURN comparison
 	|	RETURN mathop
 	|	RETURN
 	;
@@ -257,51 +260,96 @@ function_call:
 	;
 
 
-args:
+/*args:
 		args COMMA args
 	|	ID
 	|	NUM
 	;
+*/
+args:
+		ID args1		{strcat($1,$2); strcpy($$,$1); free($1);}
+	|	NUM args1		{	
+						char ancora[50];
+						sprintf(ancora,"%d",42);
+						strcat(ancora,$2);
+						strcpy($$,ancora);
+						free(ancora);
+					}
+	;
+
+args1:
+		COMMA args		{strcpy($$,strcat(",",$2)); free($1);}
+	|	%empty
+	;
+
+funcargs:
+		TYPE ID		{
+						char ancora[50];
+						strcpy(ancora,$1);
+						strcat(ancora,",");
+						strcat(ancora,$2);
+						strcpy($$,ancora);
+						free(ancora);
+						free($1);
+						free($2);
+					}
+	|	TYPE ID COMMA funcargs	{
+						char ancora[50];
+						strcpy(ancora,$1);
+						strcat(ancora,",");
+						strcat(ancora,$2);
+						strcat(ancora,"|");
+						strcat(ancora,$4);
+						strcpy($$,ancora);
+						free(ancora);
+						free($1);
+						free($2);
+						free($3);
+					}
+	|	%empty
+	;
+	
 
 function_declaration:
-		type ID OPENPAR args CLOSEPAR OPENBRAC statement CLOSEBRAC
+		type ID OPENPAR funcargs CLOSEPAR OPENBRAC statement CLOSEBRAC
 	;
 	
 	
 assignment:
-		ID ASSIGN NUM
+		ID ASSIGN NUM			{/*mais coisa de tabela de simbolos?*/}
 	|	ID ASSIGN ID
 	;
 
 variable_declaration:
-		INT ID SEMICOLON
+		type ID SEMICOLON		{/*colocar na tabela de símbolos?*/}
+/*		INT ID SEMICOLON
 	|	FLOAT ID SEMICOLON
 	|	SET ID SEMICOLON
 	|	ELEM ID SEMICOLON
-	;
+*/	;
 
 mathop:
-		mathop PLUS mathop1
-	|	mathop MINUS mathop1
+		mathop PLUS mathop1		{$$ = $1 + $3;}
+	|	mathop MINUS mathop1 		{$$ = $1 - $3;}
 	|	mathop1
 	;
 
 mathop1:
-		mathop1 AST mathop2
-	|	mathop1 BS mathop2
+		mathop1 AST mathop2		{$$ = $1 * $3;}
+	|	mathop1 BS mathop2		{$$ = $1 / $3;}
 	|	mathop2
 	;
 
 
 mathop2:
 		matharg
-	|	OPENPAR mathop CLOSEPAR
+	|	OPENPAR mathop CLOSEPAR	{$$ = $2;}
 	;
 
 matharg:
-		ID
+		ID				{/*olhar na tabela de simbolos?*/}
 	|	NUM
-	|	function_call
+	|	function_call			{$$ = atoi($1);}
 	;
 
 type:
