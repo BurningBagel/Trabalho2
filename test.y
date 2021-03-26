@@ -159,12 +159,12 @@ comparg:
 	;
 
 comparison:
-		NOT comparg				{$$ = !$2;}
+		NOT comparg					{$$ = !$2;}
 	|	comparg AND comparg			{$$ = $1 && $3;}
 	|	comparg OR comparg			{$$ = $1 || $3;}
 	|	comparg GREATER comparg		{$$ = $1 > $3;}
 	|	comparg GE comparg			{$$ = $1 >= $3;}
-	|	comparg LESS comparg			{$$ = $1 < $3;}
+	|	comparg LESS comparg		{$$ = $1 < $3;}
 	|	comparg LE comparg			{$$ = $1 <= $3;}
 	|	comparg EQ comparg			{$$ = $1 == $3;}
 	|	comparg NEQ comparg			{$$ = $1 != $3;}
@@ -178,15 +178,15 @@ write:
 //		WRITE OPENPAR ID CLOSEPAR
 		WRITE OPENPAR mathop CLOSEPAR		{printf("%d",$3);}
 //	|	WRITE OPENPAR NUM CLOSEPAR	
-	|	WRITE OPENPAR  STRING  CLOSEPAR	{printf("%s",$3);}
+	|	WRITE OPENPAR  STRING  CLOSEPAR		{printf("%s",$3);}
 	;
 
 
 writeln:
 //		WRITELN OPENPAR ID CLOSEPAR
-		WRITELN OPENPAR mathop CLOSEPAR	printf("%d\n",$3);}
+		WRITELN OPENPAR mathop CLOSEPAR		{printf("%d\n",$3);}
 //	|	WRITELN OPENPAR NUM CLOSEPAR
-	|	WRITELN OPENPAR  STRING  CLOSEPAR	printf("%s\n",$3);}
+	|	WRITELN OPENPAR  STRING  CLOSEPAR	{printf("%s\n",$3);}
 	;
 /*in:
 		ID IN ID
@@ -196,18 +196,26 @@ writeln:
 return:
 //		RETURN ID
 //	|	RETURN function_call
-		RETURN comparison
-	|	RETURN mathop
-	|	RETURN
+		RETURN comparison		{$$ = $1;}
+	|	RETURN mathop 			{$$ = $1;}
+	|	RETURN 					{$$ = NULL;}//?????
 	;
 
 for:
-		FOR OPENPAR assignment SEMICOLON comparison SEMICOLON assignment CLOSEPAR OPENBRAC statement CLOSEBRAC
+		FOR OPENPAR assignment SEMICOLON comparison SEMICOLON assignment CLOSEPAR OPENBRAC statement CLOSEBRAC	{
+																													//???
+																												}
 	;
 
 if:
-		IF OPENPAR comparison CLOSEPAR OPENBRAC statement CLOSEBRAC
-	|	IF OPENPAR comparison CLOSEPAR OPENBRAC statement CLOSEBRAC ELSE OPENBRAC statement CLOSEBRAC
+		IF OPENPAR comparison CLOSEPAR OPENBRAC statement CLOSEBRAC										{if($3) $$ = $6;}
+	|	IF OPENPAR comparison CLOSEPAR OPENBRAC statement CLOSEBRAC ELSE OPENBRAC statement CLOSEBRAC	{if($3){
+																											$$ = $6;
+																											} 
+																											else{
+																											$$ = $10;
+																											}
+																										}
 	;
 
 conjuntoop:
@@ -256,7 +264,7 @@ iteracao:
 	;
 
 function_call:
-		ID OPENPAR args CLOSEPAR SEMICOLON
+		ID OPENPAR args CLOSEPAR SEMICOLON				{printf("Chamada de função %s com argumentos %s.\n",$1,$3);free($1);free($2);free($3);free($4);free($5);}
 	;
 
 
@@ -274,6 +282,7 @@ args:
 						strcat(ancora,$2);
 						strcpy($$,ancora);
 						free(ancora);
+						free($1);
 					}
 	;
 
@@ -311,7 +320,7 @@ funcargs:
 	
 
 function_declaration:
-		type ID OPENPAR funcargs CLOSEPAR OPENBRAC statement CLOSEBRAC
+		type ID OPENPAR funcargs CLOSEPAR OPENBRAC statement CLOSEBRAC	{printf("Declaracao de funcao %s de tipo %s com argumentos %s.",$2,$1,$4);free($1);free($2);free($3);free($4);free($5);free($6);free($7);free($8);}
 	;
 	
 	
@@ -329,7 +338,7 @@ variable_declaration:
 */	;
 
 mathop:
-		mathop PLUS mathop1		{$$ = $1 + $3;}
+		mathop PLUS mathop1			{$$ = $1 + $3;}
 	|	mathop MINUS mathop1 		{$$ = $1 - $3;}
 	|	mathop1
 	;
@@ -342,8 +351,8 @@ mathop1:
 
 
 mathop2:
-		matharg
-	|	OPENPAR mathop CLOSEPAR	{$$ = $2;}
+		matharg					
+	|	OPENPAR mathop CLOSEPAR	{$$ = $2;free($1);free($3);}
 	;
 
 matharg:
