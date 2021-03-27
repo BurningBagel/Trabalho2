@@ -80,8 +80,8 @@ forall		{printf("Achei um forall na linha %d, coluna %d!\n",linhaCount,colunaCou
 return		{printf("Achei um return na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng; return RETURN;}
 {id}		{printf("Achei o id %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng; yylval.text = strdup(yytext); return ID;}
 {number}	{printf("Achei o numero %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng; yylval.text = strdup(yytext); return NUM;}
-{string}	{printf("Achei a string %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng;  return STRING;}
-{char}		{printf("Achei o char %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng; return CHAR;}
+{string}	{printf("Achei a string %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng;  yylval.text = strdup(yytext); return STRING;}
+{char}		{printf("Achei o char %s na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng; yylval.text = strdup(yytext); return CHAR;}
 "("		{printf("Achei um ( na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return OPENPAR;}
 ")"		{printf("Achei um ) na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return CLOSEPAR;}
 "{"		{printf("Achei um { na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return OPENCURLY;}

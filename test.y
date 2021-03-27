@@ -8,9 +8,7 @@ int yyerror(char *s);
 int yylex(void);
 
 
-#define VALOR 1
-#define LETRAS 2
-#define BOOLEANO 3
+
 
 //strdup() <-------------------------------
 struct simbolo{
@@ -54,6 +52,8 @@ struct no{
 	char *valor;
 };
 
+no* raiz;
+
 
 %}
 
@@ -61,6 +61,7 @@ struct no{
 	double val;	
 	char *text;
 	bool boolean;
+	no *node;
 }
 
 %token <val> NUM
@@ -110,55 +111,136 @@ struct no{
 %token <text> AMP
 %token <text> PCENT
 
-%start	statement
+%start	inicio 
 
-%type <text> assignment
-%type <text> function_declaration
-%type <text> conjuntoop
-%type <text> mathop
-%type <text> return
-%type <text> for
-%type <text> if
-%type <text> write
-%type <text> writeln
-%type <text> read
-%type <text> comparg
-%type <text> comparison
+%type <node> statement
+%type <node> assignment
+%type <node> function_declaration
+%type <node> conjuntoop
+%type <node> mathop
+%type <node> return
+%type <node> for
+%type <node> if
+%type <node> write
+%type <node> writeln
+%type <node> read
+%type <node> comparg
+%type <node> comparison
 //%type <text> in
-%type <text> conjuntoop1
-%type <text> pertinencia
-%type <text> tipagem
-%type <text> inclusao
-%type <text> remocao
-%type <text> selecao
-%type <text> iteracao
-%type <text> function_call
-%type <text> funcargs
-%type <text> args
-%type <text> args1
-%type <text> variable_declaration
-%type <val> mathop1
-%type <val> mathop2
-%type <val> matharg
+%type <node> conjuntoop1
+%type <node> pertinencia
+%type <node> tipagem
+%type <node> inclusao
+%type <node> remocao
+%type <node> selecao
+%type <node> iteracao
+%type <node> function_call
+%type <node> funcargs
+%type <node> args
+%type <node> args1
+%type <node> variable_declaration
+%type <node> mathop1
+%type <node> mathop2
+%type <node> matharg
 
 %%
+
+inicio:
+		statement								{raiz = $1;}
+	;
+
+
+
+
+
 statement: 
-		assignment SEMICOLON statement
-	|	function_declaration statement
-	|	variable_declaration statement
-	|	conjuntoop SEMICOLON statement
-	|	mathop SEMICOLON statement
-	|	return SEMICOLON statement
-	|	for statement
-	|	if statement
-	|	write SEMICOLON statement
-	|	writeln SEMICOLON statement
-	|	read SEMICOLON statement
-	|	%empty
+		assignment SEMICOLON statement			{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $3;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	function_declaration statement 			{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $2;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	variable_declaration statement 			{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $2;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	conjuntoop SEMICOLON statement			{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $3;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	mathop SEMICOLON statement				{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $3;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	return SEMICOLON statement				{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $3;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	for statement							{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $2;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	if statement							{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $2;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	write SEMICOLON statement				{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $3;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	writeln SEMICOLON statement				{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $3;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	read SEMICOLON statement				{
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).filhos[0] = $1;
+													(ancora*).filhos[1] = $3;
+													(ancora*).tipo = YYSYMBOL_statement;
+													$$ = ancora;
+												}
+	|	%empty									{$$ = NULL;}
 	;
 
 comparg:
-		ID					{/*olhar na tabela*/}
+		ID										{/*olhar na tabela*/
+													no* ancora = (no*)malloc(sizeof(no));
+													(ancora*).tipo = YYSYMBOL_comparg;
+													strdup()
+
+												}
 	|	OPENPAR comparison CLOSEPAR		{$$ = $2;}
 	|	NUM					{$$ = (atof($1) != 0);}
 	;
@@ -389,6 +471,8 @@ int yyerror(char *s){
 
 int main(int argc, char **argv){
 	tabelaSimbolos = (simbolo*)malloc(sizeof(simbolo));
+	//raiz = (no*)malloc(sizeof(no));
+	variavelRaiz = TRUE;
 	++argv;
 	--argc;//pula o nome do programa
 	if (argc > 0){
