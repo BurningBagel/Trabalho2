@@ -39,14 +39,14 @@ ws			{delim}+
 letter			[a-zA-Z]
 digit			[0-9]
 id			{letter}({letter}|{digit}|"_")*
-number			{digit}+(\.{digit}+)?
+number			-?{digit}+(\.{digit}+)?
 stringguts  		(.)+
 string			"{stringguts}"
-char			'.'
+char			'[^\r\n]'
 negacao 		!
 enderecamento 		&
 commentsingle		"//".*
-
+linebreak		(\r\n?|\n)
 
 
 
@@ -58,7 +58,7 @@ commentsingle		"//".*
 <comentario>"*"
 <comentario>"\n" {linhaCount++;colunaCount = 0;}
 		
-"\n"		{linhaCount++;colunaCount = 0;}
+linebreak		{linhaCount++;colunaCount = 0;}
 
 {ws}		{colunaCount += yyleng;}
 int		{printf("Achei um int na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng; return INT;}
