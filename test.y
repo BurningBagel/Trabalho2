@@ -9,11 +9,13 @@ int yylex(void);
 
 
 //#define ID 1
-#define CHAR 2
-#define NUM 3
-#define STRING 4
-#define FUNC 5
-
+#define CHAR_TABLE 2
+#define INT_TABLE 3
+#define FLOAT_TABLE 4
+#define STRING_TABLE 5
+#define FUNC_TABLE 6
+#define ELEM_TABLE 7
+#define SET_TABLE 8
 
 struct simbolo{				//elemento da tabela de simbolos. Contém ponteiros para os simbolos seguinte e anterior, o nome do simbolo, o valor associado a ele(em string,se tiver), qual tipo
 	simbolo* anterior;		//de simbolo é (vide defines acima), e o tamanho do valor(caso exista)
@@ -74,10 +76,10 @@ struct no{						//Elemento da árvore sintática! Contém um vetor de filhos e o
 
 	int tipo;					//Contém também um número único que identifica qual variável foi usada para criar este nó(números definidos pelo próprio Bison)
 
-	simbolo* refereTabela;		//Para uso futuro, caso o nó contenha referência á um ID, guardamos um ponteiro para onde ele se localiza na tabela de símbolos
+	simbolo* refereTabela;		//Para uso futuro, caso o nó contenha referência a um ID, guardamos um ponteiro para onde ele se localiza na tabela de símbolos
 	char *valor;				//Contém o valor associado ao item abaixo, caso exista. Para números, contém o número em string. Para IDs, contém o nome do ID, etc.
-	char *nome;					//Contém uma string que identifica qual específica transição da variável foi usada para gerar este nó. Caso contenha um ID, será sempre "ID".
-};									//Caso contenha uma constante, será "CHAR","STRING" ou "NUM", de acordo com a mesma.
+	char *nome;					//Contém uma string que identifica qual específica transição da variável foi usada para gerar este nó.
+};									
 
 no* raiz;
 
@@ -1057,17 +1059,46 @@ function_declaration:
 	
 	
 assignment:
-		ID ASSIGN NUM													{
-																			no* ancora = (no*)malloc(sizeof(no));
-																			(ancora*).numFilhos = 0;
-																			(ancora*).tipo = YYSYMBOL_assignment;
-
-																		}
-	|	ID ASSIGN ID
+		ID ASSIGN mathop													{
+																				no* ancora = (no*)malloc(sizeof(no));
+																				(ancora*).numFilhos = 1;
+																				(ancora*).tipo = YYSYMBOL_assignment;
+																				(ancora*).filhos[0] = $3;
+																				char ancora2[] = "ID";
+																				(ancora*).nome = strdup(ancora2);
+																				simbolo *ancoraSimb = ProcurarTabela($1->text);
+																				if(ancoraSimb != NULL){
+																					(ancora*).refereTabela = ancoraSimb;
+																				}
+																				else{
+																					(ancora*).refereTabela = CriarSimbolo($1->text,0,NULL);
+																				}
+																				(ancora*).valor = strdup($1->text);
+																				free($1);
+																				$$ = ancora;
+																			}
 	;
 
 variable_declaration:
-		type ID SEMICOLON		{/*colocar na tabela de símbolos?*/}
+		type ID SEMICOLON												{
+																			no* ancora = (no*)malloc(sizeof(no));
+																			(ancora*).numFilhos = 1;
+																			(ancora*).filhos[0] = $1;
+																			(ancora*).tipo = YYSYMBOL_variable_declaration;
+																			char ancora2[] = "variable_declaration";
+																			(ancora*).nome = strdup(ancora2);
+																			simbolo *ancoraSimb = ProcurarTabela($2->text);
+																			if(ancoraSimb != NULL){
+																				(ancora*).refereTabela = ancoraSimb;
+																				(ancoraSimb*).tipo = (no*)$2->valor;
+																			}
+																			else{
+																				(ancora*).refereTabela = CriarSimbolo($2->text,atoi((no*)$1->valor),NULL);
+																			}
+																			(ancora*).valor = strdup($2->text);
+																			free($2);
+																			$$ = ancora;
+																		}
 /*		INT ID SEMICOLON
 	|	FLOAT ID SEMICOLON
 	|	SET ID SEMICOLON
@@ -1075,34 +1106,198 @@ variable_declaration:
 */	;
 
 mathop:
-		mathop PLUS mathop1			{$$ = $1 + $3;}
-	|	mathop MINUS mathop1 		{$$ = $1 - $3;}
-	|	mathop1
+		mathop PLUS mathop1			{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 2;
+										(ancora*).filhos[0] = $1;
+										(ancora*).filhos[1] = $3;
+										char ancora2[] = "plus";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_mathop;
+										(ancora*).refereTabela = NULL;
+										(ancora*).valor = NULL;
+										$$ = ancora;
+									}
+	|	mathop MINUS mathop1 		{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 2;
+										(ancora*).filhos[0] = $1;
+										(ancora*).filhos[1] = $3;
+										char ancora2[] = "minus";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_mathop;
+										(ancora*).refereTabela = NULL;
+										(ancora*).valor = NULL;
+										$$ = ancora;
+									}
+	|	mathop1						{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 1;
+										(ancora*).filhos[0] = $1;
+										char ancora2[] = "mathop1";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_mathop;
+										(ancora*).refereTabela = NULL;
+										(ancora*).valor = NULL;
+										$$ = ancora;
+									}
 	;
 
 mathop1:
-		mathop1 AST mathop2		{$$ = $1 * $3;}
-	|	mathop1 BS mathop2		{$$ = $1 / $3;}
-	|	mathop2
+		mathop1 AST mathop2			{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 2;
+										(ancora*).filhos[0] = $1;
+										(ancora*).filhos[1] = $3;
+										char ancora2[] = "ast";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_mathop1;
+										(ancora*).refereTabela = NULL;
+										(ancora*).valor = NULL;
+										$$ = ancora;
+									}
+	|	mathop1 BS mathop2			{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 2;
+										(ancora*).filhos[0] = $1;
+										(ancora*).filhos[1] = $3;
+										char ancora2[] = "bs";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_mathop1;
+										(ancora*).refereTabela = NULL;
+										(ancora*).valor = NULL;
+										$$ = ancora;
+									}
+	|	mathop2						{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 1;
+										(ancora*).filhos[0] = $1;
+										char ancora2[] = "mathop2";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_mathop1;
+										(ancora*).refereTabela = NULL;
+										(ancora*).valor = NULL;
+										$$ = ancora;
+									}
 	;
 
 
 mathop2:
-		matharg					
-	|	OPENPAR mathop CLOSEPAR	{$$ = $2;}
+		matharg						{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 1;
+										(ancora*).filhos[0] = $1;
+										char ancora2[] = "matharg";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_mathop2;
+										(ancora*).refereTabela = NULL;
+										(ancora*).valor = NULL;
+										$$ = ancora;
+									}
+	|	OPENPAR mathop CLOSEPAR		{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 1;
+										(ancora*).filhos[0] = $2;
+										char ancora2[] = "pars";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_mathop2;
+										(ancora*).refereTabela = NULL;
+										(ancora*).valor = NULL;
+										$$ = ancora;
+									}
 	;
 
 matharg:
-		ID				{/*olhar na tabela de simbolos?*/}
-	|	NUM
-	|	function_call			{$$ = atoi($1);}
+		ID							{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 0;
+										(ancora*).tipo = YYSYMBOL_matharg;
+										char ancora2[] = "ID";
+										(ancora*).nome = strdup(ancora2);
+										simbolo *ancoraSimb = ProcurarTabela($1->text);
+										if(ancoraSimb != NULL){
+											(ancora*).refereTabela = ancoraSimb;
+										}
+										else{
+											(ancora*).refereTabela = CriarSimbolo($1->text,0,NULL);
+										}
+										(ancora*).valor = strdup($1->text);
+										free($1);
+										$$ = ancora;																
+									}
+
+	|	NUM 						{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 0;
+										(ancora*).tipo = YYSYMBOL_matharg;
+										char ancora2[] = "NUM";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).valor = strdup($1->text);
+										(ancora*).refereTabela = NULL;
+										free($1);
+										$$ = ancora;																
+									}
+	|	function_call				{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 1;
+										(ancora*).tipo = YYSYMBOL_matharg;
+										char ancora2[] = "function_call";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).valor = NULL;
+										(ancora*).refereTabela = NULL;
+										$$ = ancora;																
+									}
 	;
 
 type:
-		SET
-	|	INT
-	|	ELEM
-	|	FLOAT
+		SET 						{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 0;
+										char ancora2[] = "set";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_type;
+										(ancora*).refereTabela = NULL;
+										char ancora3[1];
+										sprintf(ancora3,"%d",SET_TABLE);
+										(ancora*).valor = strdup(ancora3);
+										$$ = ancora;
+									}
+	|	INT 						{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 0;
+										char ancora2[] = "int";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_type;
+										(ancora*).refereTabela = NULL;
+										char ancora3[1];
+										sprintf(ancora3,"%d",NUM_TABLE);
+										(ancora*).valor = strdup(ancora3);
+										$$ = ancora;
+									}
+	|	ELEM 						{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 0;
+										char ancora2[] = "elem";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_type;
+										(ancora*).refereTabela = NULL;
+										char ancora3[1];
+										sprintf(ancora3,"%d",ELEM_TABLE);
+										(ancora*).valor = strdup(ancora3);
+										$$ = ancora;
+									}
+	|	FLOAT 						{
+										no* ancora = (no*)malloc(sizeof(no));
+										(ancora*).numFilhos = 0;
+										char ancora2[] = "float";
+										(ancora*).nome = strdup(ancora2);
+										(ancora*).tipo = YYSYMBOL_type;
+										(ancora*).refereTabela = NULL;
+										char ancora3[1];
+										sprintf(ancora3,"%d",FLOAT_TABLE);
+										(ancora*).valor = strdup(ancora3);
+										$$ = ancora;
+									}
 	;
 
 %%
@@ -1133,6 +1328,7 @@ int main(int argc, char **argv){
 	}
 	yyparse();
 	fclose(yyin);
+
 	yylex_destroy();
 	ApagarTabela();
 	return 0;
