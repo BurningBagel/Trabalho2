@@ -67,6 +67,47 @@ simbolo* ProcurarTabela(char *nome){
 no* raiz;
 
 
+
+void EscreverTabela(){
+	printf("-----------TABELA DE SIMBOLOS----------\n");
+	printf("|-------------------------------------|\n");
+	simbolo *ancora = tabelaSimbolos;
+	while(ancora != NULL){
+		printf("%s|",(*ancora).nome);
+		if((*ancora).tipo == NUM_TABLE){
+			printf("variavel de numero\n");
+		}
+		else if((*ancora).tipo == FUNC_TABLE){
+			printf("funcao\n");
+		}
+		else if((*ancora).tipo == SET_TABLE){
+			printf("variavel de set\n");
+		}
+		else if((*ancora).tipo == ELEM_TABLE){
+			printf("variavel polimorfica\n");
+		}
+
+		ancora = (*ancora).seguinte;
+	}
+}
+
+void ApagarNo(no* argumento){
+	free((*argumento).nome);
+	free((*argumento).valor);
+}
+
+void EscreverArvore(no* argumento,int profund){
+	int i,j;
+	for(i = 0;i < (*argumento).numFilhos;i++){
+		EscreverArvore((*argumento).filhos[i],profund+1);
+	}
+	for(j = 0;j < profund;j++){
+		printf("-");
+	}
+	printf(">%s\n",(*argumento).nome);
+	ApagarNo(argumento);
+}
+
 %}
 
 
@@ -513,6 +554,17 @@ write:
 													$$ = ancora;
 													free($3);
 												}
+	|	WRITE OPENPAR CHAR CLOSEPAR				{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).numFilhos = 0;
+													(*ancora).tipo = YYSYMBOL_write;
+													char ancora2[] = "char";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = strdup($3);
+													$$ = ancora;
+													free($3);
+												}
 	;
 
 
@@ -585,7 +637,7 @@ return:
 	;
 
 for:
-		FOR OPENPAR assignment SEMICOLON comparison SEMICOLON assignment CLOSEPAR OPENBRAC statement CLOSEBRAC	{
+		FOR OPENPAR assignment SEMICOLON comparison SEMICOLON assignment CLOSEPAR OPENCURLY statement CLOSECURLY{
 																													no* ancora = (no*)malloc(sizeof(no));
 																													(*ancora).filhos[0] = $3;
 																													(*ancora).filhos[1] = $5;
@@ -602,19 +654,19 @@ for:
 	;
 
 if:
-		IF OPENPAR comparison CLOSEPAR OPENBRAC statement CLOSEBRAC											{
-																												no* ancora = (no*)malloc(sizeof(no));
-																												(*ancora).filhos[0] = $3;
-																												(*ancora).filhos[1] = $6;
-																												(*ancora).numFilhos = 2;
-																												(*ancora).tipo = YYSYMBOL_if;
-																												char ancora2[] = "if";
-																												(*ancora).nome = strdup(ancora2);
-																												(*ancora).refereTabela = NULL;
-																												(*ancora).valor = NULL;
-																												$$ = ancora;
+		IF OPENPAR comparison CLOSEPAR OPENCURLY statement CLOSECURLY										{
+																													no* ancora = (no*)malloc(sizeof(no));
+																													(*ancora).filhos[0] = $3;
+																													(*ancora).filhos[1] = $6;
+																													(*ancora).numFilhos = 2;
+																													(*ancora).tipo = YYSYMBOL_if;
+																													char ancora2[] = "if";
+																													(*ancora).nome = strdup(ancora2);
+																													(*ancora).refereTabela = NULL;
+																													(*ancora).valor = NULL;
+																													$$ = ancora;
 																											}
-	|	IF OPENPAR comparison CLOSEPAR OPENBRAC statement CLOSEBRAC ELSE OPENBRAC statement CLOSEBRAC		{
+	|	IF OPENPAR comparison CLOSEPAR OPENCURLY statement CLOSECURLY ELSE OPENCURLY statement CLOSECURLY	{
 																												no* ancora = (no*)malloc(sizeof(no));
 																												(*ancora).filhos[0] = $3;
 																												(*ancora).filhos[1] = $6;
@@ -857,7 +909,7 @@ selecao:
 	;
 
 iteracao:
-		FORALL OPENPAR pertinencia CLOSEPAR OPENBRAC statement CLOSEBRAC	{
+		FORALL OPENPAR pertinencia CLOSEPAR OPENCURLY statement CLOSECURLY	{
 																				no* ancora = (no*)malloc(sizeof(no));
 																				(*ancora).numFilhos = 2;
 																				(*ancora).filhos[0] = $3;
@@ -1020,27 +1072,27 @@ funcargs:
 	
 
 function_declaration:
-		type ID OPENPAR funcargs CLOSEPAR OPENBRAC statement CLOSEBRAC	{
-																			no* ancora = (no*)malloc(sizeof(no));
-																			(*ancora).numFilhos = 3;
-																			(*ancora).filhos[0] = $1;
-																			(*ancora).filhos[1] = $4;
-																			(*ancora).filhos[2] = $7;
-																			(*ancora).tipo = YYSYMBOL_function_declaration;
-																			char ancora2[] = "function_declaration";
-																			(*ancora).nome = strdup(ancora2);
-																			simbolo *ancoraSimb = ProcurarTabela($2);
-																			if(ancoraSimb != NULL){
-																				(*ancora).refereTabela = ancoraSimb;
-																				(*ancoraSimb).tipo = FUNC_TABLE;
+		type ID OPENPAR funcargs CLOSEPAR OPENCURLY statement CLOSECURLY 	{
+																				no* ancora = (no*)malloc(sizeof(no));
+																				(*ancora).numFilhos = 3;
+																				(*ancora).filhos[0] = $1;
+																				(*ancora).filhos[1] = $4;
+																				(*ancora).filhos[2] = $7;
+																				(*ancora).tipo = YYSYMBOL_function_declaration;
+																				char ancora2[] = "function_declaration";
+																				(*ancora).nome = strdup(ancora2);
+																				simbolo *ancoraSimb = ProcurarTabela($2);
+																				if(ancoraSimb != NULL){
+																					(*ancora).refereTabela = ancoraSimb;
+																					(*ancoraSimb).tipo = FUNC_TABLE;
+																				}
+																				else{
+																					(*ancora).refereTabela = CriarSimbolo($2,FUNC_TABLE,NULL);
+																				}
+																				(*ancora).valor = strdup($2);
+																				free($2);
+																				$$ = ancora;
 																			}
-																			else{
-																				(*ancora).refereTabela = CriarSimbolo($2,FUNC_TABLE,NULL);
-																			}
-																			(*ancora).valor = strdup($2);
-																			free($2);
-																			$$ = ancora;
-																		}
 	;
 	
 	
@@ -1314,7 +1366,8 @@ int main(int argc, char **argv){
 	}
 	yyparse();
 	fclose(yyin);
-
+	EscreverTabela();
+	EscreverArvore(raiz,1);
 	yylex_destroy();
 	ApagarTabela();
 	return 0;
