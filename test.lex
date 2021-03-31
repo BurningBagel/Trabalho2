@@ -1,5 +1,5 @@
 %option nounput noinput
-
+%option noyywrap
 %{
 	/*
 	#define LT 1
