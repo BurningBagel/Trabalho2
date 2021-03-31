@@ -4,6 +4,8 @@
 #include <string.h>
 #include "definicoes.h"
 
+extern FILE *yyin;
+
 int yyerror(char *s);
 int yylex(void);
 
@@ -1074,7 +1076,7 @@ variable_declaration:
 																			simbolo *ancoraSimb = ProcurarTabela($2);
 																			if(ancoraSimb != NULL){
 																				(*ancora).refereTabela = ancoraSimb;
-																				(*ancoraSimb).tipo = atoi(((no*)$2)->valor);
+																				(*ancoraSimb).tipo = atoi(((no*)$1)->valor);
 																			}
 																			else{
 																				(*ancora).refereTabela = CriarSimbolo($2,atoi(((no*)$1)->valor),NULL);
@@ -1241,7 +1243,7 @@ type:
 										(*ancora).nome = strdup(ancora2);
 										(*ancora).tipo = YYSYMBOL_type;
 										(*ancora).refereTabela = NULL;
-										char ancora3[1];
+										char ancora3[2];
 										sprintf(ancora3,"%d",SET_TABLE);
 										(*ancora).valor = strdup(ancora3);
 										$$ = ancora;
@@ -1253,7 +1255,7 @@ type:
 										(*ancora).nome = strdup(ancora2);
 										(*ancora).tipo = YYSYMBOL_type;
 										(*ancora).refereTabela = NULL;
-										char ancora3[1];
+										char ancora3[2];
 										sprintf(ancora3,"%d",NUM_TABLE);
 										(*ancora).valor = strdup(ancora3);
 										$$ = ancora;
@@ -1265,7 +1267,7 @@ type:
 										(*ancora).nome = strdup(ancora2);
 										(*ancora).tipo = YYSYMBOL_type;
 										(*ancora).refereTabela = NULL;
-										char ancora3[1];
+										char ancora3[2];
 										sprintf(ancora3,"%d",ELEM_TABLE);
 										(*ancora).valor = strdup(ancora3);
 										$$ = ancora;
@@ -1277,7 +1279,7 @@ type:
 										(*ancora).nome = strdup(ancora2);
 										(*ancora).tipo = YYSYMBOL_type;
 										(*ancora).refereTabela = NULL;
-										char ancora3[1];
+										char ancora3[2];
 										sprintf(ancora3,"%d",NUM_TABLE);
 										(*ancora).valor = strdup(ancora3);
 										$$ = ancora;
@@ -1294,10 +1296,10 @@ int yyerror(char *s){
 	exit(1);
 }
 
-int yyerror(char *s){
+/*int yyerror(char *s){
 	return yyerror(s);
 }
-
+*/
 int main(int argc, char **argv){
 	topo = tabelaSimbolos;
 	//raiz = (no*)malloc(sizeof(no));
