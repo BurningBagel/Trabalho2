@@ -23,6 +23,7 @@
 	#define CBRA 21
 	#define MAIN 22
 	*/
+	#include "test.tab.h"
 	int linhaCount = 0;
 	int colunaCount = 0;
 	int chamaComment;
@@ -106,7 +107,7 @@ return		{printf("Achei um return na linha %d, coluna %d!\n",linhaCount,colunaCou
 "&&"		{printf("Achei um && na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return AND;}
 {negacao}	{printf("Achei uma negacao na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return NOT;}
 "&"		{printf("Achei um & na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return AMP;}
-"%"		{printf("Achei um % na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return PCENT;}
+"%"		{printf("Achei um %% na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return PCENT;}
 .		{printf("Achei um token ->%s<- que não pertence a linguagem, na linha %d, coluna %d!\n",yytext,linhaCount,colunaCount);colunaCount += yyleng;}
 
 %%
