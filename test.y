@@ -112,7 +112,6 @@ void EscreverArvore(no* argumento,int profund){
 
 
 
-
 %union {
 	double val;	
 	char *text;
@@ -199,6 +198,9 @@ void EscreverArvore(no* argumento,int profund){
 %type <node> mathop2
 %type <node> matharg
 %type <node> type;
+
+
+%destructor {free($$);} <*>
 
 %%
 
@@ -1340,11 +1342,11 @@ type:
 
 %%
 
-int yyerror(char *s){
-	extern int yylineo;
+void yyerror(char *s){
+	extern int yylineno;
 	extern char *yytext;
 
-	printf("ERRO %s NO SIMBOLO <%s> na linha <%d>\n",s,yytext,yylineo);
+	printf("ERRO %s NO SIMBOLO <%s> na linha <%d>\n",s,yytext,yylineno);
 	exit(1);
 }
 
@@ -1368,7 +1370,7 @@ int main(int argc, char **argv){
 	fclose(yyin);
 	EscreverTabela();
 	EscreverArvore(raiz,1);
-	yylex_destroy();
+	//yylex_destroy();
 	ApagarTabela();
 	return 0;
 }
