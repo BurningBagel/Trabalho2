@@ -111,6 +111,7 @@ void EscreverArvore(no* argumento,int profund){
 %}
 
 %define parse.lac full
+%define parse.error detailed
 
 %union {
 	double val;	
