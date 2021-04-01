@@ -2,3 +2,4 @@ lex.yy.c
 test.tab.c
 test.output
 test.tab.h
+a.out
