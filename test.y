@@ -6,7 +6,7 @@
 
 extern FILE *yyin;
 
-int yyerror(char *s);
+void yyerror(char const *s);
 int yylex(void);
 
 
@@ -110,7 +110,7 @@ void EscreverArvore(no* argumento,int profund){
 
 %}
 
-
+%define parse.lac full
 
 %union {
 	double val;	
@@ -1341,7 +1341,7 @@ type:
 	;
 
 %%
-
+/*
 void yyerror(char *s){
 	extern int yylineno;
 	extern char *yytext;
@@ -1349,6 +1349,13 @@ void yyerror(char *s){
 	printf("ERRO %s NO SIMBOLO <%s> na linha <%d>\n",s,yytext,yylineno);
 	exit(1);
 }
+*/
+
+void yyerror(char const *s){
+	printf("%s\n",s);
+
+}
+
 
 /*int yyerror(char *s){
 	return yyerror(s);
