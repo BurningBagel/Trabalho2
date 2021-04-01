@@ -24,8 +24,14 @@ simbolo* topo;
 	
 simbolo* CriarSimbolo(char* nome, int tipo, char* valor){
 	simbolo *ancora = (simbolo*)malloc(sizeof(simbolo));
-	(*topo).seguinte = ancora;
-	(*ancora).anterior = topo;
+	if(tabelaSimbolos == NULL){
+		tabelaSimbolos = topo = ancora;
+		(*ancora).anterior = NULL;
+	}
+	else{
+		(*topo).seguinte = ancora;
+		(*ancora).anterior = topo;
+	}
 	(*ancora).seguinte = NULL;
 	(*ancora).tipo = tipo;
 	(*ancora).valor = strdup(valor);
