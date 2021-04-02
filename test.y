@@ -42,7 +42,7 @@ simbolo* CriarSimbolo(char* nome, int tipo, char* valor){
 		(*ancora).valor = NULL;
 		(*ancora).tamanhoValor = 0;
 	} 
-	
+	(*ancora).nome = strdup(nome);
 	topo = ancora;
 	return ancora;
 }
@@ -65,10 +65,11 @@ void ApagarTabela(){
 }
 
 	
-simbolo* ProcurarTabela(char *nome){
+simbolo* ProcurarTabela(char* alvo){
 	simbolo *ancora = tabelaSimbolos;
+	printf("\n\nOI %s OI \n\n",alvo);
 	while(ancora != NULL){
-		if(!strcmp((*ancora).nome,nome)){
+		if(!strcmp((*ancora).nome,alvo)){
 			return ancora;
 		}
 		ancora = (*ancora).seguinte;
@@ -1063,6 +1064,7 @@ funcargs:
 									(*ancora).tipo = YYSYMBOL_funcargs;
 									char ancora2[] = "comma";
 									(*ancora).nome = strdup(ancora2);
+									//printf("\n\nOI %s OI\n\n",$2);
 									simbolo *ancoraSimb = ProcurarTabela($2);
 									if(ancoraSimb != NULL){
 										(*ancora).refereTabela = ancoraSimb;

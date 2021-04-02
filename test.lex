@@ -24,7 +24,7 @@
 	#define MAIN 22
 	*/
 	#include "test.tab.h"
-	int linhaCount = 0;
+	int linhaCount = 1;
 	int colunaCount = 0;
 	int chamaComment;
 	
@@ -59,7 +59,7 @@ linebreak		(\r\n?|\n)
 <comentario>"*"
 <comentario>"\n" {linhaCount++;colunaCount = 0;}
 		
-linebreak		{linhaCount++;colunaCount = 0;}
+{linebreak}		{linhaCount++;colunaCount = 0;}
 
 {ws}		{colunaCount += yyleng;}
 int		{printf("Achei um int na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng; return INT;}
