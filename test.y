@@ -67,7 +67,7 @@ void ApagarTabela(){
 	
 simbolo* ProcurarTabela(char* alvo){
 	simbolo *ancora = tabelaSimbolos;
-	printf("\n\nOI %s OI \n\n",alvo);
+//	printf("\n\nOI %s OI \n\n",alvo);
 	while(ancora != NULL){
 		if(!strcmp((*ancora).nome,alvo)){
 			return ancora;
@@ -112,6 +112,7 @@ void ApagarNo(no* argumento){
 
 void EscreverArvore(no* argumento,int profund){
 	int i,j;
+	if(argumento == NULL) return;
 	for(i = 0;i < (*argumento).numFilhos;i++){
 		EscreverArvore((*argumento).filhos[i],profund+1);
 	}
@@ -216,7 +217,7 @@ void EscreverArvore(no* argumento,int profund){
 %type <node> single_line_statement;
 %type <node> else;
 
-%destructor {free($$);} <*>
+%destructor {} <*>
 
 %%
 

@@ -60,7 +60,7 @@ linebreak		(\r\n?|\n)
 <comentario>"\n" {linhaCount++;colunaCount = 0;}
 		
 {linebreak}		{linhaCount++;colunaCount = 0;}
-
+{commentsingle}	{}
 {ws}		{colunaCount += yyleng;}
 int		{printf("Achei um int na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng; return INT;}
 float		{printf("Achei um float na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng; return FLOAT;}
