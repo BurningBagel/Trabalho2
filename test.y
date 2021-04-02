@@ -213,7 +213,8 @@ void EscreverArvore(no* argumento,int profund){
 %type <node> mathop2
 %type <node> matharg
 %type <node> type;
-
+%type <node> single_line_statement;
+%type <node> else;
 
 %destructor {free($$);} <*>
 
@@ -371,6 +372,95 @@ statement:
 													$$ = ancora;
 												}
 	;
+
+
+single_line_statement:
+		return SEMICOLON 						{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).numFilhos = 1;
+													char ancora2[] = "return";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_single_line_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+												}
+
+	|	assignment SEMICOLON					{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).numFilhos = 1;
+													char ancora2[] = "assignment";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_single_line_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+												}
+
+	|	write SEMICOLON 						{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).numFilhos = 1;
+													char ancora2[] = "write";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_single_line_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+												}
+
+	|	writeln SEMICOLON 						{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).numFilhos = 1;
+													char ancora2[] = "writeln";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_single_line_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+												}
+
+	|	read SEMICOLON 							{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).numFilhos = 1;
+													char ancora2[] = "read";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_single_line_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+												}
+
+	|	mathop SEMICOLON						{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).numFilhos = 1;
+													char ancora2[] = "mathop";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_single_line_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+												}
+
+	|	conjuntoop SEMICOLON 					{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).numFilhos = 1;
+													char ancora2[] = "conjuntoop";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_single_line_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+												}
+
+	;
+
 
 comparg:
 		ID										{
@@ -683,11 +773,11 @@ if:
 																													(*ancora).valor = NULL;
 																													$$ = ancora;
 																											}
-	|	IF OPENPAR comparison CLOSEPAR OPENCURLY statement CLOSECURLY ELSE OPENCURLY statement CLOSECURLY	{
+	|	IF OPENPAR comparison CLOSEPAR OPENCURLY statement CLOSECURLY else									{
 																												no* ancora = (no*)malloc(sizeof(no));
 																												(*ancora).filhos[0] = $3;
 																												(*ancora).filhos[1] = $6;
-																												(*ancora).filhos[2] = $10;
+																												(*ancora).filhos[2] = $8;
 																												(*ancora).numFilhos = 3;
 																												(*ancora).tipo = YYSYMBOL_if;
 																												char ancora2[] = "else";
@@ -696,7 +786,66 @@ if:
 																												(*ancora).valor = NULL;
 																												$$ = ancora;
 																											}
+	|  IF OPENPAR comparison CLOSEPAR single_line_statement else											{
+																												no* ancora = (no*)malloc(sizeof(no));
+																												(*ancora).filhos[0] = $3;
+																												(*ancora).filhos[1] = $5;
+																												(*ancora).filhos[2] = $6;
+																												(*ancora).numFilhos = 3;
+																												(*ancora).tipo = YYSYMBOL_if;
+																												char ancora2[] = "single_line_statement";
+																												(*ancora).nome = strdup(ancora2);
+																												(*ancora).refereTabela = NULL;
+																												(*ancora).valor = NULL;
+																												$$ = ancora;
+																											}
 	;
+
+else:
+	ELSE if 										{
+														no* ancora = (no*)malloc(sizeof(no));
+														(*ancora).filhos[0] = $2;
+														(*ancora).numFilhos = 1;
+														char ancora2[] = "if";
+														(*ancora).nome = strdup(ancora2);
+														(*ancora).tipo = YYSYMBOL_else;
+														(*ancora).refereTabela = NULL;
+														(*ancora).valor = NULL;
+														$$ = ancora;
+													}
+|	ELSE single_line_statement						{
+														no* ancora = (no*)malloc(sizeof(no));
+														(*ancora).filhos[0] = $2;
+														(*ancora).numFilhos = 1;
+														char ancora2[] = "single_line_statement";
+														(*ancora).nome = strdup(ancora2);
+														(*ancora).tipo = YYSYMBOL_else;
+														(*ancora).refereTabela = NULL;
+														(*ancora).valor = NULL;
+														$$ = ancora;
+													}
+|	ELSE OPENCURLY statement CLOSECURLY				{
+														no* ancora = (no*)malloc(sizeof(no));
+														(*ancora).filhos[0] = $3;
+														(*ancora).numFilhos = 1;
+														char ancora2[] = "curly";
+														(*ancora).nome = strdup(ancora2);
+														(*ancora).tipo = YYSYMBOL_else;
+														(*ancora).refereTabela = NULL;
+														(*ancora).valor = NULL;
+														$$ = ancora;
+													}
+|	%empty											{
+														no* ancora = (no*)malloc(sizeof(no));
+														(*ancora).numFilhos = 0;
+														char ancora2[] = "epsilon";
+														(*ancora).nome = strdup(ancora2);
+														(*ancora).tipo = YYSYMBOL_else;
+														(*ancora).refereTabela = NULL;
+														(*ancora).valor = NULL;
+														$$ = ancora;
+													}
+;
 
 conjuntoop:
 		pertinencia								{
