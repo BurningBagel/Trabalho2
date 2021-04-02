@@ -34,7 +34,12 @@ simbolo* CriarSimbolo(char* nome, int tipo, char* valor){
 	}
 	(*ancora).seguinte = NULL;
 	(*ancora).tipo = tipo;
-	(*ancora).valor = strdup(valor);
+	if(valor != NULL){
+		(*ancora).valor = strdup(valor);
+	}
+	else{
+		(*ancora).valor = NULL;
+	} 
 	(*ancora).tamanhoValor = strlen(valor);
 	topo = ancora;
 	return ancora;
