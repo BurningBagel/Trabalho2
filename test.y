@@ -1004,7 +1004,6 @@ pertinencia:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
-	|	
 	;
 
 tipagem:
