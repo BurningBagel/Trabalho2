@@ -254,10 +254,10 @@ statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
-	|	variable_declaration statement 			{
+	|	variable_declaration SEMICOLON statement 			{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
-													(*ancora).filhos[1] = $2;
+													(*ancora).filhos[1] = $3;
 													(*ancora).numFilhos = 2;
 													char ancora2[] = "variable_declaration";
 													(*ancora).nome = strdup(ancora2);
@@ -362,6 +362,18 @@ statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
+	|	function_call SEMICOLON statement 		{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).filhos[1] = $3;
+													(*ancora).numFilhos = 2;
+													char ancora2[] = "function_call";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+												}
 	|	%empty									{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).numFilhos = 0;
@@ -376,7 +388,7 @@ statement:
 
 
 single_line_statement:
-		return SEMICOLON 						{
+		return 			 						{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -388,7 +400,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 
-	|	assignment SEMICOLON					{
+	|	assignment 								{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -400,7 +412,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 
-	|	write SEMICOLON 						{
+	|	write 			 						{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -412,7 +424,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 
-	|	writeln SEMICOLON 						{
+	|	writeln 		 						{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -424,7 +436,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 
-	|	read SEMICOLON 							{
+	|	read 		 							{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -436,7 +448,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 
-	|	mathop SEMICOLON						{
+	|	mathop 									{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -448,7 +460,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 
-	|	conjuntoop SEMICOLON 					{
+	|	conjuntoop 			 					{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -776,7 +788,7 @@ if:
 																												(*ancora).valor = NULL;
 																												$$ = ancora;
 																											}
-	|  IF OPENPAR comparison CLOSEPAR single_line_statement else											{
+	|  IF OPENPAR comparison CLOSEPAR single_line_statement SEMICOLON else											{
 																												no* ancora = (no*)malloc(sizeof(no));
 																												(*ancora).filhos[0] = $3;
 																												(*ancora).filhos[1] = $5;
@@ -1077,7 +1089,7 @@ iteracao:
 																				(*ancora).valor = NULL;
 																				$$ = ancora;
 																			}
-	|	FORALL OPENPAR pertinencia CLOSEPAR single_line_statement				{
+	|	FORALL OPENPAR pertinencia CLOSEPAR single_line_statement SEMICOLON				{
 																				no* ancora = (no*)malloc(sizeof(no));
 																				(*ancora).numFilhos = 2;
 																				(*ancora).filhos[0] = $3;
@@ -1092,7 +1104,7 @@ iteracao:
 	;
 
 function_call:
-		ID OPENPAR args CLOSEPAR SEMICOLON									{
+		ID OPENPAR args CLOSEPAR 											{
 																				no* ancora = (no*)malloc(sizeof(no));
 																				(*ancora).numFilhos = 1;
 																				(*ancora).filhos[0] = $3;
@@ -1275,7 +1287,7 @@ assignment:
 	;
 
 variable_declaration:
-		type ID SEMICOLON												{
+		type ID															{
 																			no* ancora = (no*)malloc(sizeof(no));
 																			(*ancora).numFilhos = 1;
 																			(*ancora).filhos[0] = $1;
