@@ -1004,6 +1004,7 @@ pertinencia:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
+	|	
 	;
 
 tipagem:
@@ -1076,7 +1077,7 @@ iteracao:
 																				(*ancora).valor = NULL;
 																				$$ = ancora;
 																			}
-	|	FORALL OPENPAR pertinencia CLOSEPAR statement SEMICOLON				{
+	|	FORALL OPENPAR pertinencia CLOSEPAR single_line_statement				{
 																				no* ancora = (no*)malloc(sizeof(no));
 																				(*ancora).numFilhos = 2;
 																				(*ancora).filhos[0] = $3;
