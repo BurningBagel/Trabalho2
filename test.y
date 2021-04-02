@@ -278,7 +278,7 @@ statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
-	|	mathop SEMICOLON statement				{
+	/*|	mathop SEMICOLON statement				{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).filhos[1] = $3;
@@ -290,6 +290,7 @@ statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
+	*/
 	|	return SEMICOLON statement				{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
@@ -447,7 +448,7 @@ single_line_statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
-
+/*
 	|	mathop 									{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
@@ -459,7 +460,7 @@ single_line_statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
-
+*/
 	|	conjuntoop 			 					{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
