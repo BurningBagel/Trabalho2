@@ -761,26 +761,15 @@ for:
 	;
 
 if:
-		IF OPENPAR comparison CLOSEPAR OPENCURLY statement CLOSECURLY										{
-																													no* ancora = (no*)malloc(sizeof(no));
-																													(*ancora).filhos[0] = $3;
-																													(*ancora).filhos[1] = $6;
-																													(*ancora).numFilhos = 2;
-																													(*ancora).tipo = YYSYMBOL_if;
-																													char ancora2[] = "if";
-																													(*ancora).nome = strdup(ancora2);
-																													(*ancora).refereTabela = NULL;
-																													(*ancora).valor = NULL;
-																													$$ = ancora;
-																											}
-	|	IF OPENPAR comparison CLOSEPAR OPENCURLY statement CLOSECURLY else									{
+		
+	IF OPENPAR comparison CLOSEPAR OPENCURLY statement CLOSECURLY else										{
 																												no* ancora = (no*)malloc(sizeof(no));
 																												(*ancora).filhos[0] = $3;
 																												(*ancora).filhos[1] = $6;
 																												(*ancora).filhos[2] = $8;
 																												(*ancora).numFilhos = 3;
 																												(*ancora).tipo = YYSYMBOL_if;
-																												char ancora2[] = "else";
+																												char ancora2[] = "if";
 																												(*ancora).nome = strdup(ancora2);
 																												(*ancora).refereTabela = NULL;
 																												(*ancora).valor = NULL;
