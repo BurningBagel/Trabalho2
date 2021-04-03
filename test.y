@@ -269,7 +269,7 @@ statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
-	|	conjuntoop SEMICOLON statement			{
+	|	conjuntoop statement			        {
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).filhos[1] = $3;
@@ -326,6 +326,19 @@ statement:
 													char ancora2[] = "if";
 													(*ancora).nome = strdup(ancora2);
 													(*ancora).tipo = YYSYMBOL_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+												}
+
+	|	iteracao statement 						{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).numFilhos = 2;
+													(*ancora).filhos[0] = $1;
+													(*ancora).filhos[1] = $2;
+													(*ancora).tipo = YYSYMBOL_statement;
+													char ancora2[] = "iteracao";
+													(*ancora).nome = strdup(ancora2);
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
@@ -904,17 +917,6 @@ conjuntoop:
 													(*ancora).filhos[0] = $1;
 													(*ancora).tipo = YYSYMBOL_conjuntoop;
 													char ancora2[] = "selecao";
-													(*ancora).nome = strdup(ancora2);
-													(*ancora).refereTabela = NULL;
-													(*ancora).valor = NULL;
-													$$ = ancora;
-												}
-	|	iteracao								{
-													no* ancora = (no*)malloc(sizeof(no));
-													(*ancora).numFilhos = 1;
-													(*ancora).filhos[0] = $1;
-													(*ancora).tipo = YYSYMBOL_conjuntoop;
-													char ancora2[] = "iteracao";
 													(*ancora).nome = strdup(ancora2);
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
