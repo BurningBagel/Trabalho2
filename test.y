@@ -322,7 +322,7 @@ statement:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	/*
 	|	assignment SEMICOLON statement			{
@@ -440,7 +440,7 @@ single_line_statement:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 
 	|	assignment SEMICOLON 					{
@@ -453,7 +453,7 @@ single_line_statement:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 
 	|	write SEMICOLON		 					{
@@ -466,7 +466,7 @@ single_line_statement:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 
 	|	writeln SEMICOLON	 					{
@@ -479,7 +479,7 @@ single_line_statement:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 
 	|	read SEMICOLON		 					{
@@ -492,7 +492,7 @@ single_line_statement:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 /*
 	|	mathop 									{
@@ -517,7 +517,7 @@ single_line_statement:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 
 	;
@@ -554,8 +554,8 @@ comparg:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
-													free($3);
+													$1 = NULL;
+													$3 = NULL;
 												}
 	|	NUM										{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -592,7 +592,7 @@ comparison:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
+													$1 = NULL;
 												}
 	|	comparg AND comparg						{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -605,7 +605,7 @@ comparison:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	|	comparg OR comparg						{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -618,7 +618,7 @@ comparison:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	|	comparg GREATER comparg					{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -631,7 +631,7 @@ comparison:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	|	comparg GE comparg						{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -644,7 +644,7 @@ comparison:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	|	comparg LESS comparg					{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -657,7 +657,7 @@ comparison:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	|	comparg LE comparg						{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -670,7 +670,7 @@ comparison:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	|	comparg EQ comparg						{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -683,7 +683,7 @@ comparison:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	|	comparg NEQ comparg						{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -696,7 +696,7 @@ comparison:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	;
 
@@ -717,9 +717,9 @@ read:
 													$$ = ancora;
 													(*ancora).valor = strdup($3);
 													free($3);
-													free($1);
-													free($2);
-													free($4);
+													$1 = NULL;
+													$2 = NULL;
+													$4 = NULL;
 												}
 	;
 
@@ -735,9 +735,9 @@ write:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
-													free($2);
-													free($4);
+													$1 = NULL;
+													$2 = NULL;
+													$4 = NULL;
 												}
 //	|	WRITE OPENPAR NUM CLOSEPAR	
 	|	WRITE OPENPAR  STRING  CLOSEPAR			{
@@ -750,9 +750,9 @@ write:
 													(*ancora).valor = strdup($3);
 													$$ = ancora;
 													free($3);
-													free($1);
-													free($2);
-													free($4);
+													$1 = NULL;
+													$2 = NULL;
+													$4 = NULL;
 												}
 	|	WRITE OPENPAR CHAR CLOSEPAR				{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -764,9 +764,9 @@ write:
 													(*ancora).valor = strdup($3);
 													$$ = ancora;
 													free($3);
-													free($1);
-													free($2);
-													free($4);
+													$1 = NULL;
+													$2 = NULL;
+													$4 = NULL;
 												}
 	;
 
@@ -783,9 +783,9 @@ writeln:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
-													free($2);
-													free($4);
+													$1 = NULL;
+													$2 = NULL;
+													$4 = NULL;
 												}
 //	|	WRITELN OPENPAR NUM CLOSEPAR
 	|	WRITELN OPENPAR  STRING  CLOSEPAR		{
@@ -798,9 +798,9 @@ writeln:
 													(*ancora).valor = strdup($3);
 													$$ = ancora;
 													free($3);
-													free($1);
-													free($2);
-													free($4);
+													$1 = NULL;
+													$2 = NULL;
+													$4 = NULL;
 												}
 	;
 /*in:
@@ -821,7 +821,7 @@ return:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
+													$1 = NULL;
 													//free($3);
 												}
 	|	RETURN mathop							{
@@ -834,7 +834,7 @@ return:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
+													$1 = NULL;
 													//free($3);
 												}
 	|	RETURN 									{
@@ -846,7 +846,7 @@ return:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
+													$1 = NULL;
 													//free($2);
 												}
 	;
@@ -865,13 +865,13 @@ for:
 																													(*ancora).refereTabela = NULL;
 																													(*ancora).valor = NULL;
 																													$$ = ancora;
-																													free($1);
-																													free($2);
-																													free($4);
-																													free($6);
-																													free($8);
-																													free($9);
-																													free($11);
+																													$1 = NULL;
+																													$2 = NULL;
+																													$4 = NULL;
+																													$6 = NULL;
+																													$8 = NULL;
+																													$9 = NULL;
+																													$11 = NULL;
 																												}
 	;
 
@@ -889,11 +889,11 @@ if:
 																												(*ancora).refereTabela = NULL;
 																												(*ancora).valor = NULL;
 																												$$ = ancora;
-																												free($1);
-																												free($2);
-																												free($4);
-																												free($5);
-																												free($7);
+																												$1 = NULL;
+																												$2 = NULL;
+																												$4 = NULL;
+																												$5 = NULL;
+																												$7 = NULL;
 																											}
 	|  IF OPENPAR comparison CLOSEPAR single_line_statement else											{
 																												no* ancora = (no*)malloc(sizeof(no));
@@ -907,9 +907,9 @@ if:
 																												(*ancora).refereTabela = NULL;
 																												(*ancora).valor = NULL;
 																												$$ = ancora;
-																												free($1);
-																												free($2);
-																												free($4);
+																												$1 = NULL;
+																												$2 = NULL;
+																												$4 = NULL;
 																											}
 	;
 
@@ -936,7 +936,7 @@ else:
 														(*ancora).refereTabela = NULL;
 														(*ancora).valor = NULL;
 														$$ = ancora;
-														free($1);
+														$1 = NULL;
 													}
 |	ELSE OPENCURLY statement CLOSECURLY				{
 														no* ancora = (no*)malloc(sizeof(no));
@@ -948,9 +948,9 @@ else:
 														(*ancora).refereTabela = NULL;
 														(*ancora).valor = NULL;
 														$$ = ancora;
-														free($1);
-														free($2);
-														free($4);
+														$1 = NULL;
+														$2 = NULL;
+														$4 = NULL;
 													}
 |	%empty											{
 														no* ancora = (no*)malloc(sizeof(no));
@@ -1109,7 +1109,7 @@ pertinencia:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	|	selecao IN conjuntoop1 					{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -1122,7 +1122,7 @@ pertinencia:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
+													$2 = NULL;
 												}
 	;
 
@@ -1137,9 +1137,9 @@ tipagem:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
-													free($2);
-													free($4);
+													$1 = NULL;
+													$2 = NULL;
+													$4 = NULL;
 												}
 	;
 
@@ -1154,9 +1154,9 @@ inclusao:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
-													free($2);
-													free($4);
+													$1 = NULL;
+													$2 = NULL;
+													$4 = NULL;
 												}
 	;
 
@@ -1171,9 +1171,9 @@ remocao:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
-													free($2);
-													free($4);
+													$1 = NULL;
+													$2 = NULL;
+													$4 = NULL;
 												}
 	;
 	
@@ -1189,9 +1189,9 @@ selecao:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($1);
-													free($2);
-													free($4);
+													$1 = NULL;
+													$2 = NULL;
+													$4 = NULL;
 												}
 	;
 
@@ -1207,11 +1207,11 @@ iteracao:
 																				(*ancora).refereTabela = NULL;
 																				(*ancora).valor = NULL;
 																				$$ = ancora;
-																				free($1);
-																				free($2);
-																				free($4);
-																				free($5);
-																				free($7);
+																				$1 = NULL;
+																				$2 = NULL;
+																				$4 = NULL;
+																				$5 = NULL;
+																				$7 = NULL;
 																			}
 	|	FORALL OPENPAR pertinencia CLOSEPAR single_line_statement 				{
 																				no* ancora = (no*)malloc(sizeof(no));
@@ -1224,9 +1224,9 @@ iteracao:
 																				(*ancora).refereTabela = NULL;
 																				(*ancora).valor = NULL;
 																				$$ = ancora;
-																				free($1);
-																				free($2);
-																				free($4);
+																				$1 = NULL;
+																				$2 = NULL;
+																				$4 = NULL;
 																			}
 	;
 
@@ -1247,9 +1247,9 @@ function_call:
 																					(*ancora).refereTabela = CriarSimbolo($1,FUNC_TABLE,NULL);
 																				}
 																				$$ = ancora;
-																				free($1);
-																				free($2);
-																				free($4);
+																				$1 = NULL;
+																				$2 = NULL;
+																				$4 = NULL;
 																			}
 	;
 
@@ -1304,7 +1304,7 @@ args1:
 							(*ancora).refereTabela = NULL;
 							(*ancora).valor = NULL;
 							$$ = ancora;
-							free($1);
+							$1 = NULL;
 						}
 	|	%empty			{
 							no* ancora = (no*)malloc(sizeof(no));
@@ -1355,7 +1355,7 @@ funcargs:
 									}
 									(*ancora).valor = strdup($2);
 									free($2);
-									free($3);
+									$3 = NULL;
 									$$ = ancora;
 								}
 	|	%empty					{
@@ -1391,10 +1391,10 @@ function_declaration:
 																				}
 																				(*ancora).valor = strdup($2);
 																				free($2);
-																				free($3);
-																				free($5);
-																				free($6);
-																				free($8);
+																				$3 = NULL;
+																				$5 = NULL;
+																				$6 = NULL;
+																				$8 = NULL;
 																				$$ = ancora;
 																			}
 	;
@@ -1417,7 +1417,7 @@ assignment:
 																				}
 																				(*ancora).valor = strdup($1);
 																				free($1);
-																				free($2);
+																				$2 = NULL;
 																				$$ = ancora;
 																			}
 	;
@@ -1460,7 +1460,7 @@ mathop:
 										(*ancora).refereTabela = NULL;
 										(*ancora).valor = NULL;
 										$$ = ancora;
-										free($2);
+										$2 = NULL;
 									}
 	|	mathop MINUS mathop1 		{
 										no* ancora = (no*)malloc(sizeof(no));
@@ -1473,7 +1473,7 @@ mathop:
 										(*ancora).refereTabela = NULL;
 										(*ancora).valor = NULL;
 										$$ = ancora;
-										free($2);
+										$2 = NULL;
 									}
 	|	mathop1						{
 										no* ancora = (no*)malloc(sizeof(no));
@@ -1500,7 +1500,7 @@ mathop1:
 										(*ancora).refereTabela = NULL;
 										(*ancora).valor = NULL;
 										$$ = ancora;
-										free($2);
+										$2 = NULL;
 									}
 	|	mathop1 BS mathop2			{
 										no* ancora = (no*)malloc(sizeof(no));
@@ -1513,7 +1513,7 @@ mathop1:
 										(*ancora).refereTabela = NULL;
 										(*ancora).valor = NULL;
 										$$ = ancora;
-										free($2);
+										$2 = NULL;
 									}
 	|	mathop2						{
 										no* ancora = (no*)malloc(sizeof(no));
@@ -1551,8 +1551,8 @@ mathop2:
 										(*ancora).refereTabela = NULL;
 										(*ancora).valor = NULL;
 										$$ = ancora;
-										free($1);
-										free($3);
+										$1 = NULL;
+										$3 = NULL;
 									}
 	;
 
@@ -1611,7 +1611,7 @@ type:
 										sprintf(ancora3,"%d",SET_TABLE);
 										(*ancora).valor = strdup(ancora3);
 										$$ = ancora;
-										free($1);
+										$1 = NULL;
 									}
 	|	INT 						{
 										no* ancora = (no*)malloc(sizeof(no));
@@ -1624,7 +1624,7 @@ type:
 										sprintf(ancora3,"%d",NUM_TABLE);
 										(*ancora).valor = strdup(ancora3);
 										$$ = ancora;
-										free($1);
+										$1 = NULL;
 									}
 	|	ELEM 						{
 										no* ancora = (no*)malloc(sizeof(no));
@@ -1637,7 +1637,7 @@ type:
 										sprintf(ancora3,"%d",ELEM_TABLE);
 										(*ancora).valor = strdup(ancora3);
 										$$ = ancora;
-										free($1);
+										$1 = NULL;
 									}
 	|	FLOAT 						{
 										no* ancora = (no*)malloc(sizeof(no));
@@ -1650,7 +1650,7 @@ type:
 										sprintf(ancora3,"%d",NUM_TABLE);
 										(*ancora).valor = strdup(ancora3);
 										$$ = ancora;
-										free($1);
+										$1 = NULL;
 									}
 	;
 
