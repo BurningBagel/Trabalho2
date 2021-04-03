@@ -1072,7 +1072,20 @@ pertinencia:
 													(*ancora).filhos[0] = $1;
 													(*ancora).filhos[1] = $3;
 													(*ancora).tipo = YYSYMBOL_pertinencia;
-													char ancora2[] = "pertinencia";
+													char ancora2[] = "mathop";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+													free($2);
+												}
+	|	selecao IN conjuntoop1 					{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).numFilhos = 2;
+													(*ancora).filhos[0] = $1;
+													(*ancora).filhos[1] = $3;
+													(*ancora).tipo = YYSYMBOL_pertinencia;
+													char ancora2[] = "selecao";
 													(*ancora).nome = strdup(ancora2);
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
