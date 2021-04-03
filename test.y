@@ -233,19 +233,19 @@ inicio:
 
 
 statement: 
-		assignment SEMICOLON statement			{
+		single_line_statement statement 		{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
-													(*ancora).filhos[1] = $3;
+													(*ancora).filhos[1] = $2;
 													(*ancora).numFilhos = 2;
-													char ancora2[] = "assignment";
+													char ancora2[] = "single_line_statement";
 													(*ancora).nome = strdup(ancora2);
 													(*ancora).tipo = YYSYMBOL_statement;
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
-													free($2);
 												}
+		
 	|	function_declaration statement 			{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
@@ -258,31 +258,8 @@ statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
-	|	variable_declaration SEMICOLON statement 			{
-													no* ancora = (no*)malloc(sizeof(no));
-													(*ancora).filhos[0] = $1;
-													(*ancora).filhos[1] = $3;
-													(*ancora).numFilhos = 2;
-													char ancora2[] = "variable_declaration";
-													(*ancora).nome = strdup(ancora2);
-													(*ancora).tipo = YYSYMBOL_statement;
-													(*ancora).refereTabela = NULL;
-													(*ancora).valor = NULL;
-													$$ = ancora;
-													free($2);
-												}
-	|	conjuntoop statement			        {
-													no* ancora = (no*)malloc(sizeof(no));
-													(*ancora).filhos[0] = $1;
-													(*ancora).filhos[1] = $2;
-													(*ancora).numFilhos = 2;
-													char ancora2[] = "conjuntoop";
-													(*ancora).nome = strdup(ancora2);
-													(*ancora).tipo = YYSYMBOL_statement;
-													(*ancora).refereTabela = NULL;
-													(*ancora).valor = NULL;
-													$$ = ancora;
-												}
+	
+	
 	/*|	mathop SEMICOLON statement				{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
@@ -296,18 +273,7 @@ statement:
 													$$ = ancora;
 												}
 	*/
-	|	return statement						{
-													no* ancora = (no*)malloc(sizeof(no));
-													(*ancora).filhos[0] = $1;
-													(*ancora).filhos[1] = $2;
-													(*ancora).numFilhos = 2;
-													char ancora2[] = "return";
-													(*ancora).nome = strdup(ancora2);
-													(*ancora).tipo = YYSYMBOL_statement;
-													(*ancora).refereTabela = NULL;
-													(*ancora).valor = NULL;
-													$$ = ancora;
-												}
+	
 	|	for statement							{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
@@ -345,6 +311,33 @@ statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
+	/*
+	|	assignment SEMICOLON statement			{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).filhos[1] = $3;
+													(*ancora).numFilhos = 2;
+													char ancora2[] = "assignment";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+													free($2);
+												}
+	|	variable_declaration SEMICOLON statement 			{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).filhos[1] = $3;
+													(*ancora).numFilhos = 2;
+													char ancora2[] = "variable_declaration";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+													free($2);
+												}
 	|	write SEMICOLON statement				{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
@@ -357,6 +350,30 @@ statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 													free($2);
+												}
+	|	conjuntoop statement			        {
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).filhos[1] = $2;
+													(*ancora).numFilhos = 2;
+													char ancora2[] = "conjuntoop";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+												}
+	|	return statement						{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).filhos[1] = $2;
+													(*ancora).numFilhos = 2;
+													char ancora2[] = "return";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
 												}
 	|	writeln SEMICOLON statement				{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -397,6 +414,7 @@ statement:
 													$$ = ancora;
 													free($2);
 												}
+ */
 	|	%empty									{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).numFilhos = 0;
@@ -411,7 +429,7 @@ statement:
 
 
 single_line_statement:
-		return 			 						{
+		return SEMICOLON			 			{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -532,6 +550,7 @@ comparg:
 													char ancora2[] = "comparison";
 													(*ancora).nome = strdup(ancora2);
 													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
 													$$ = ancora;
 													free($1);
 													free($3);
@@ -546,6 +565,16 @@ comparg:
 													(*ancora).refereTabela = NULL;
 													$$ = ancora;
 													free($1);
+												}
+	|	function_call 							{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).numFilhos = 0;
+													(*ancora).tipo = YYSYMBOL_comparg;
+													char ancora2[] = "function_call";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
 												}
 	;
 
@@ -779,7 +808,7 @@ writeln:
 return:
 //		RETURN ID
 //	|	RETURN function_call
-		RETURN comparison SEMICOLON				{
+		RETURN comparison						{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $2;
 													(*ancora).numFilhos = 1;
@@ -790,9 +819,9 @@ return:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 													free($1);
-													free($3);
+													//free($3);
 												}
-	|	RETURN mathop SEMICOLON					{
+	|	RETURN mathop							{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $2;
 													(*ancora).numFilhos = 1;
@@ -803,9 +832,9 @@ return:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 													free($1);
-													free($3);
+													//free($3);
 												}
-	|	RETURN 	SEMICOLON						{
+	|	RETURN 									{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).numFilhos = 0;
 													(*ancora).tipo = YYSYMBOL_return;
@@ -815,7 +844,7 @@ return:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 													free($1);
-													free($2);
+													//free($2);
 												}
 	;
 
