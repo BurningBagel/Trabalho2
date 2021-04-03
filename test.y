@@ -100,6 +100,9 @@ void EscreverTabela(){
 		else if((*ancora).tipo == ELEM_TABLE){
 			printf("variavel polimorfica\n");
 		}
+		else{
+			printf("Constante\n");
+		}
 
 		ancora = (*ancora).seguinte;
 	}
@@ -217,7 +220,7 @@ void EscreverArvore(no* argumento,int profund){
 %type <node> single_line_statement
 %type <node> else
 
-%destructor {} <*>
+%destructor {$$ = NULL;} <*>
 
 %%
 
@@ -1090,7 +1093,7 @@ iteracao:
 																				(*ancora).valor = NULL;
 																				$$ = ancora;
 																			}
-	|	FORALL OPENPAR pertinencia CLOSEPAR single_line_statement SEMICOLON				{
+	|	FORALL OPENPAR pertinencia CLOSEPAR single_line_statement 				{
 																				no* ancora = (no*)malloc(sizeof(no));
 																				(*ancora).numFilhos = 2;
 																				(*ancora).filhos[0] = $3;
