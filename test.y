@@ -294,7 +294,7 @@ statement:
 	|	return statement						{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
-													(*ancora).filhos[1] = $3;
+													(*ancora).filhos[1] = $2;
 													(*ancora).numFilhos = 2;
 													char ancora2[] = "return";
 													(*ancora).nome = strdup(ancora2);
@@ -1448,6 +1448,7 @@ matharg:
 	|	function_call				{
 										no* ancora = (no*)malloc(sizeof(no));
 										(*ancora).numFilhos = 1;
+										(*ancora).filhos[0] = $1;
 										(*ancora).tipo = YYSYMBOL_matharg;
 										char ancora2[] = "function_call";
 										(*ancora).nome = strdup(ancora2);
