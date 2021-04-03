@@ -213,9 +213,9 @@ void EscreverArvore(no* argumento,int profund){
 %type <node> mathop1
 %type <node> mathop2
 %type <node> matharg
-%type <node> type;
-%type <node> single_line_statement;
-%type <node> else;
+%type <node> type
+%type <node> single_line_statement
+%type <node> else
 
 %destructor {} <*>
 
