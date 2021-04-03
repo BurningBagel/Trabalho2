@@ -291,7 +291,7 @@ statement:
 													$$ = ancora;
 												}
 	*/
-	|	return SEMICOLON statement				{
+	|	return statement						{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).filhos[1] = $3;
@@ -401,7 +401,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 
-	|	assignment 								{
+	|	assignment SEMICOLON 					{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -413,7 +413,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 
-	|	write 			 						{
+	|	write SEMICOLON		 					{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -425,7 +425,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 
-	|	writeln 		 						{
+	|	writeln SEMICOLON	 					{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -437,7 +437,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 
-	|	read 		 							{
+	|	read SEMICOLON		 					{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -461,7 +461,7 @@ single_line_statement:
 													$$ = ancora;
 												}
 */
-	|	conjuntoop 			 					{
+	|	conjuntoop 	SEMICOLON		 			{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
 													(*ancora).numFilhos = 1;
@@ -723,7 +723,7 @@ writeln:
 return:
 //		RETURN ID
 //	|	RETURN function_call
-		RETURN comparison						{
+		RETURN comparison SEMICOLON				{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $2;
 													(*ancora).numFilhos = 1;
@@ -734,7 +734,7 @@ return:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
-	|	RETURN mathop 							{
+	|	RETURN mathop SEMICOLON					{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $2;
 													(*ancora).numFilhos = 1;
@@ -745,7 +745,7 @@ return:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
-	|	RETURN 									{
+	|	RETURN 	SEMICOLON						{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).numFilhos = 0;
 													(*ancora).tipo = YYSYMBOL_return;
@@ -789,7 +789,7 @@ if:
 																												(*ancora).valor = NULL;
 																												$$ = ancora;
 																											}
-	|  IF OPENPAR comparison CLOSEPAR single_line_statement SEMICOLON else											{
+	|  IF OPENPAR comparison CLOSEPAR single_line_statement else											{
 																												no* ancora = (no*)malloc(sizeof(no));
 																												(*ancora).filhos[0] = $3;
 																												(*ancora).filhos[1] = $5;
