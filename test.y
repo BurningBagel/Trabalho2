@@ -311,6 +311,19 @@ statement:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
+	|	variable_declaration SEMICOLON statement 			{
+													no* ancora = (no*)malloc(sizeof(no));
+													(*ancora).filhos[0] = $1;
+													(*ancora).filhos[1] = $3;
+													(*ancora).numFilhos = 2;
+													char ancora2[] = "variable_declaration";
+													(*ancora).nome = strdup(ancora2);
+													(*ancora).tipo = YYSYMBOL_statement;
+													(*ancora).refereTabela = NULL;
+													(*ancora).valor = NULL;
+													$$ = ancora;
+													free($2);
+												}
 	/*
 	|	assignment SEMICOLON statement			{
 													no* ancora = (no*)malloc(sizeof(no));
@@ -325,19 +338,7 @@ statement:
 													$$ = ancora;
 													free($2);
 												}
-	|	variable_declaration SEMICOLON statement 			{
-													no* ancora = (no*)malloc(sizeof(no));
-													(*ancora).filhos[0] = $1;
-													(*ancora).filhos[1] = $3;
-													(*ancora).numFilhos = 2;
-													char ancora2[] = "variable_declaration";
-													(*ancora).nome = strdup(ancora2);
-													(*ancora).tipo = YYSYMBOL_statement;
-													(*ancora).refereTabela = NULL;
-													(*ancora).valor = NULL;
-													$$ = ancora;
-													free($2);
-												}
+	
 	|	write SEMICOLON statement				{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
@@ -439,6 +440,7 @@ single_line_statement:
 													(*ancora).refereTabela = NULL;
 													(*ancora).valor = NULL;
 													$$ = ancora;
+													free($2);
 												}
 
 	|	assignment SEMICOLON 					{
@@ -568,7 +570,8 @@ comparg:
 												}
 	|	function_call 							{
 													no* ancora = (no*)malloc(sizeof(no));
-													(*ancora).numFilhos = 0;
+													(*ancora).numFilhos = 1;
+													(*ancora).filhos[0] = $1;
 													(*ancora).tipo = YYSYMBOL_comparg;
 													char ancora2[] = "function_call";
 													(*ancora).nome = strdup(ancora2);
