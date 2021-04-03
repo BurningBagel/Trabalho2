@@ -97,7 +97,6 @@ return		{printf("Achei um return na linha %d, coluna %d!\n",linhaCount,colunaCou
 ">="		{printf("Achei um >= na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return GE;}
 "+"		{printf("Achei um + na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return PLUS;}
 "-"		{printf("Achei um - na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return MINUS;}
-"//"		{printf("Achei um // na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return DBS;}
 "*"		{printf("Achei um * na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return AST;}
 "/"		{printf("Achei um / na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return BS;}
 "="		{printf("Achei um = na linha %d, coluna %d!\n",linhaCount,colunaCount);colunaCount += yyleng;return ASSIGN;}
