@@ -980,17 +980,6 @@ conjuntoop1:
 													(*ancora).valor = NULL;
 													$$ = ancora;
 												}
-	|	iteracao								{
-													no* ancora = (no*)malloc(sizeof(no));
-													(*ancora).numFilhos = 1;
-													(*ancora).filhos[0] = $1;
-													(*ancora).tipo = YYSYMBOL_conjuntoop1;
-													char ancora2[] = "iteracao";
-													(*ancora).nome = strdup(ancora2);
-													(*ancora).refereTabela = NULL;
-													(*ancora).valor = NULL;
-													$$ = ancora;
-												}
 	|	ID 										{
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).numFilhos = 0;
