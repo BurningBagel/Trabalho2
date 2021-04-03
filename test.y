@@ -274,7 +274,7 @@ statement:
 	|	conjuntoop statement			        {
 													no* ancora = (no*)malloc(sizeof(no));
 													(*ancora).filhos[0] = $1;
-													(*ancora).filhos[1] = $3;
+													(*ancora).filhos[1] = $2;
 													(*ancora).numFilhos = 2;
 													char ancora2[] = "conjuntoop";
 													(*ancora).nome = strdup(ancora2);
