@@ -116,13 +116,14 @@ void ApagarNo(no* argumento){
 void EscreverArvore(no* argumento,int profund){
 	int i,j;
 	if(argumento == NULL) return;
-	for(i = 0;i < (*argumento).numFilhos;i++){
-		EscreverArvore((*argumento).filhos[i],profund+1);
-	}
 	for(j = 0;j < profund;j++){
 		printf("-");
 	}
 	printf(">%s\n",(*argumento).nome);
+	for(i = 0;i < (*argumento).numFilhos;i++){
+		EscreverArvore((*argumento).filhos[i],profund+1);
+	}
+	
 	ApagarNo(argumento);
 }
 
